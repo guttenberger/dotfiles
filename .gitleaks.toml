@@ -1,0 +1,48 @@
+# Gitleaks configuration for dotfiles repository
+# Uses Gitleaks default rules (which are comprehensive!)
+# This file mainly provides allowlisting for dotfile-specific patterns
+
+title = "Dotfiles Gitleaks Configuration"
+
+# Use all the default Gitleaks rules - they cover AWS, GitHub, Slack, 
+# SSH keys, database URLs, and 100+ other secret types
+[extend]
+useDefault = true
+
+# Allowlist certain patterns that are common in dotfiles but not secrets
+[allowlist]
+description = "Allowlist for dotfiles"
+paths = [
+    '''\.gitleaks\.toml$''',
+    '''README\.md$''',
+    '''\.github/workflows/.*\.yml$''',
+    '''\.pre-commit-config\.yaml$'''
+]
+
+commits = [
+    # Add commit SHAs here if you need to allowlist specific commits
+]
+
+regexes = [
+    # Example patterns that might appear in dotfiles but aren't secrets
+    '''echo\s+["'][^"']*["']''',  # Echo statements in shell scripts
+    '''export\s+PATH=''',         # PATH exports
+    '''alias\s+\w+=''',           # Shell aliases
+    '''function\s+\w+\(\)''',     # Shell functions
+    # Vim/Neovim configuration patterns
+    '''vim\..*=''',
+    '''nvim\..*=''',
+    '''set\s+\w+=''',
+    # Git configuration
+    '''git\s+config\s+--global''',
+    # Common dotfile patterns that might trigger false positives
+    '''#.*password.*example''',   # Comments with example passwords
+    '''#.*token.*placeholder''',  # Comments with token placeholders
+    '''TODO:.*''',               # TODO comments
+    '''FIXME:.*''',              # FIXME comments
+]
+
+files = [
+    # Specific files to ignore
+    '''lazy-lock\.json$''',      # Neovim plugin lock file
+]
