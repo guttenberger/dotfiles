@@ -23,5 +23,22 @@ if [ -d ~/.bashrc.d ]; then
     done
 fi
 unset rc
-. "$HOME/.cargo/env"
-eval "$(rtx activate bash)"
+
+# Load shared environment variables
+if [ -f ~/.shell_env ]; then
+    source ~/.shell_env
+fi
+
+# Load shared aliases
+if [ -f ~/.aliases ]; then
+    source ~/.aliases
+fi
+
+# Load fzf integration for bash
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# Initialize and load zoxide for bash
+if command -v zoxide &>/dev/null; then
+    eval "$(zoxide init bash)"
+fi
+[ -f ~/.zoxide.bash ] && source ~/.zoxide.bash

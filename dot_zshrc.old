@@ -1,0 +1,79 @@
+##### zgenom bootstrap (simple & quiet) ########################################
+if [ ! -d "${HOME}/.zgenom" ]; then
+  git clone https://github.com/jandamm/zgenom.git "${HOME}/.zgenom"
+fi
+source "${HOME}/.zgenom/zgenom.zsh"
+
+if ! zgenom saved; then
+  # QoL plugins
+  # zgenom load zsh-users/zsh-autosuggestions
+  zgenom load zsh-users/zsh-syntax-highlighting
+  zgenom load zsh-users/zsh-completions
+  zgenom load zsh-users/zsh-history-substring-search
+  zgenom load Aloxaf/fzf-tab
+
+  zgenom save
+fi
+################################################################################
+
+# Prompt
+PROMPT='%F{#00BFFF}%n%:%F{#247FFF}%~%f$ '
+
+# Load shared environment variables
+if [ -f ~/.shell_env ]; then
+    source ~/.shell_env
+fi
+
+# Load shared aliases
+if [ -f ~/.aliases ]; then
+    source ~/.aliases
+fi
+
+# Load fzf integration for zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Initialize and load zoxide for zsh
+eval "$(zoxide init zsh)"
+[ -f ~/.zoxide.zsh ] && source ~/.zoxide.zsh
+
+# Zsh-specific aliases
+alias zr='zgenom reset && source ~/.zshrc'   # 🔄 reload plugins & zshrc
+
+# History
+HISTFILE=~/.history
+HISTSIZE=100000
+SAVEHIST=100000
+setopt inc_append_history
+
+# Completion
+autoload -U compinit && compinit -u
+
+# Keybindings
+bindkey -e
+bindkey "\e[A" history-beginning-search-backward
+bindkey "\e[B" history-beginning-search-forward
+bindkey '\e[F' end-of-line
+bindkey '\e[H' beginning-of-line
+bindkey '\e[3~' delete-char
+bindkey '\e[5~' history-beginning-search-backward
+bindkey '\e[6~' history-beginning-search-forward
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+
+##### zsh-syntax-highlighting minimal colors ####################################
+# Only show red when command is invalid, keep everything else white
+ZSH_HIGHLIGHT_STYLES[default]='none'
+ZSH_HIGHLIGHT_STYLES[command]='none'
+ZSH_HIGHLIGHT_STYLES[alias]='none'
+ZSH_HIGHLIGHT_STYLES[builtin]='none'
+ZSH_HIGHLIGHT_STYLES[function]='none'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='none'
+ZSH_HIGHLIGHT_STYLES[precommand]='none'
+ZSH_HIGHLIGHT_STYLES[hashed-command]='none'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red'
+ZSH_HIGHLIGHT_MAXIMUM_ASYNC_WAIT=0.2
+################################################################################

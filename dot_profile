@@ -1,8 +1,0 @@
-. "$HOME/.cargo/env"
-export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$HOME/.luarocks/bin:$PATH"
-
-
-# Added by Toolbox App
-export PATH="$PATH:/home/ldonley/.local/share/JetBrains/Toolbox/scripts"
-
