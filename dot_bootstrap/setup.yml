@@ -71,12 +71,19 @@
           - toilet
           - dotnet-sdk-8.0
           - unar
+          - python3-pip
+          - gitleaks
         state: present
 
     - name: Change shell to zsh
       ansible.builtin.user:
         name: "{{ remote_regular_user }}"
         shell: /usr/bin/zsh
+
+    - name: Install pre-commit
+      ansible.builtin.pip:
+        name: pre-commit
+        state: present
 
     - name: Install DNF plugins core
       ansible.builtin.dnf:

@@ -1,0 +1,52 @@
+# Pre-commit hooks configuration
+# This ensures security checks run before commits are made
+# Install with: pre-commit install
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Basic file checks
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-executables-have-shebangs
+
+      # Security-related checks
+      - id: detect-private-key
+      - id: check-ast # Check Python AST
+
+  # Shell script linting
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.9.0
+    hooks:
+      - id: shellcheck
+        args: [--severity=warning]
+        files: \.(sh|bash|zsh)$
+
+  # YAML formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        files: \.(yml|yaml)$
+
+  # Additional security scanning
+  - repo: local
+    hooks:
+      - id: gitleaks-protect
+        name: Gitleaks Protect
+        entry: gitleaks
+        args: [protect, --verbose, --redact, --staged]
+        language: system
+        pass_filenames: false
+
