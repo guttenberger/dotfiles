@@ -32,31 +32,28 @@
         state: present
       when: ansible_os_family == "Darwin"
 
-    # Install bin binary manager
-    - name: Check if bin is installed
-      ansible.builtin.command: command -v bin
-      register: bin_check
-      failed_when: false
-      changed_when: false
+    # Install development tools via native package managers
+    - name: Install development tools (macOS)
+      community.general.homebrew:
+        name:
+          - ripgrep
+          - fd
+          - neovim
+          - lazygit
+        state: present
+      when: ansible_os_family == "Darwin"
 
-    - name: Install bin binary manager
-      ansible.builtin.shell: |
-        curl -sf https://gobinaries.com/marcosnils/bin | sh
-        mkdir -p ~/.local/bin
-        mv bin ~/.local/bin/
-      when: bin_check.rc != 0
-
-    # Use bin to install development tools
-    - name: Install development tools via bin
-      ansible.builtin.command: "~/.local/bin/bin install {{ item }}"
-      loop:
-        - github.com/BurntSushi/ripgrep
-        - github.com/sharkdp/fd
-        - github.com/neovim/neovim
-        - github.com/jesseduffield/lazygit
-      register: bin_install_result
-      failed_when: false
-      changed_when: bin_install_result.rc == 0
+    - name: Install development tools (Ubuntu/WSL)
+      ansible.builtin.apt:
+        name:
+          - ripgrep
+          - fd-find
+          - neovim
+          - lazygit
+        state: present
+        update_cache: true
+      become: true
+      when: ansible_os_family == "Debian"
 
     - name: Setup ripgrep config
       ansible.builtin.copy:
