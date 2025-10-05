@@ -9,35 +9,32 @@ alias v='nvim'
 
 # Cross-platform color aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS (BSD ls)
-    alias ls='ls -G -hv'
-    alias grep='grep --color=auto'
-    alias diff='diff'
+  # macOS (BSD ls)
+  alias ls='ls -G -hv'
+  alias grep='grep --color=auto'
+  alias diff='diff'
 else
-    # Linux/WSL (GNU ls)
-    alias ls='ls --color=auto -hv'
-    alias grep='grep --color=auto'
-    alias diff='diff --color=auto'
-    alias ip='ip -c=auto'
+  # Linux/WSL (GNU ls)
+  alias ls='ls --color=auto -hv'
+  alias grep='grep --color=auto'
+  alias diff='diff --color=auto'
+  alias ip='ip -c=auto'
 fi
 
 # Common shortcuts
 alias ll='ls -l'
-alias la='ls -la' 
+alias la='ls -la'
 alias l='ls -CF'
 
 # Modern replacements (if available)
 if command -v fd &>/dev/null; then
-    alias find='fd'
+  alias find='fd'
 fi
 if command -v rg &>/dev/null; then
-    alias grep='rg'
-fi
-if command -v bat &>/dev/null; then
-    alias cat='bat'
+  alias grep='rg'
 fi
 if command -v zoxide &>/dev/null; then
-    alias cd='z'  # Use zoxide for smart directory jumping
+  alias cd='z' # Use zoxide for smart directory jumping
 fi
 
 # Git aliases
@@ -68,9 +65,9 @@ alias nowdate='date +"%d-%m-%Y"'
 
 # Tool-specific enhancements
 if command -v fzf &>/dev/null; then
-    # Enhanced file/directory search
-    alias ff='fzf --preview "bat --color=always --style=header,grid --line-range :300 {}"'
-    alias fcd='cd $(fd --type d | fzf)'
+  # Enhanced file/directory search
+  alias ff='fzf --preview "bat --color=always --style=header,grid --line-range :300 {}"'
+  alias fcd='cd $(fd --type d | fzf)'
 fi
 
 # Development shortcuts
@@ -80,17 +77,18 @@ alias ports='netstat -tulanp'
 
 # Make directory and cd into it
 mkcd() {
-    mkdir -p "$1" && cd "$1"
+  mkdir -p "$1" && cd "$1"
 }
 
 # Enhanced grep with ripgrep
 if command -v rg &>/dev/null; then
-    rgf() {
-        rg --files-with-matches "$1" | fzf --preview "rg --color=always --line-number --no-heading --smart-case $1 {}"
-    }
+  rgf() {
+    rg --files-with-matches "$1" | fzf --preview "rg --color=always --line-number --no-heading --smart-case $1 {}"
+  }
 fi
 
 # Quick edit common files
 alias edit-aliases='$EDITOR ~/.aliases && source ~/.aliases'
 alias edit-zshrc='$EDITOR ~/.zshrc && source ~/.zshrc'
 alias edit-bashrc='$EDITOR ~/.bashrc && source ~/.bashrc'
+

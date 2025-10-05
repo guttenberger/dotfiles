@@ -16,6 +16,25 @@ mkdir -p "$zsh_dir" "$zsh_state_dir" "$zsh_plugins_dir" 2>/dev/null || true
 # Prompt
 PROMPT='%F{#00BFFF}%n%:%F{#247FFF}%~%f$ '
 
+############################### ALIASES / SMALL STUBS ############################
+# Prefer aliases kept under ~/.config/zsh/aliases, fallback to ~/.aliases
+if [ -f "${HOME}/aliases" ]; then
+  source "${HOME}/.aliases"
+fi
+
+# zsh Aliases
+alias zr='zgenom reset && source "${zsh_dir}/.zshrc"'   # 🔄 reload plugins & zshrc
+
+################################### KEYBINDINGS ####################################
+bindkey -e
+bindkey "\e[A" history-beginning-search-backward
+bindkey "\e[B" history-beginning-search-forward
+bindkey '\e[1~' beginning-of-line   # Home in tmux
+bindkey '\e[4~' end-of-line         # End  in tmux
+bindkey '\e[3~' delete-char
+bindkey '\e[5~' history-beginning-search-backward
+bindkey '\e[6~' history-beginning-search-forward
+
 ############################### HISTORY CONFIG ##################################
 # History stored under XDG state dir
 HISTFILE="${zsh_state_dir}/history"
@@ -26,30 +45,18 @@ SAVEHIST=100000
 setopt inc_append_history       # write commands as they happen
 setopt append_history           # append, don't overwrite
 
-############################### ALIASES / SMALL STUBS ############################
-# Prefer aliases kept under ~/.config/zsh/aliases, fallback to ~/.aliases
-if [ -f "${HOME}/aliases" ]; then
-  source "${HOME}/.aliases"
-fi
-
-# zsh Aliases
-alias zr='zgenom reset && source "${zsh_dir}/.zshrc"'   # 🔄 reload plugins & zshrc
-
 ############################### ZGENOM PLUGINS ##################################
-# Ensure plugin dir exists
-mkdir -p "$zsh_plugins_dir" 2>/dev/null || true
-
 # Tell zgenom where to clone plugins (use config dir plugins per your request)
 export ZGEN_DIR="$zsh_plugins_dir"
 
 # install zgenom if missing (keeps zgenom under ~/.config/zsh/.zgenom)
-if [ ! -d "${zsh_dir}/.zgenom" ]; then
-  git clone https://github.com/jandamm/zgenom.git "${zsh_dir}/.zgenom"
+if [ ! -d "${zsh_plugins_dir}/.zgenom" ]; then
+  git clone https://github.com/jandamm/zgenom.git "${zsh_plugins_dir}/.zgenom"
 fi
 
 # source zgenom if available, then run loads only if zgenom is defined
-if [ -f "${zsh_dir}/.zgenom/zgenom.zsh" ]; then
-  source "${zsh_dir}/.zgenom/zgenom.zsh"
+if [ -f "${zsh_plugins_dir}/.zgenom/zgenom.zsh" ]; then
+  source "${zsh_plugins_dir}/.zgenom/zgenom.zsh"
 
   # run one-time plugin installation/saving only if zgenom function exists
   if command -v zgenom >/dev/null 2>&1; then
