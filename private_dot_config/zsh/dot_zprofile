@@ -1,6 +1,5 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
-source <(fzf --zsh)
-
-# Initialize and load zoxide for zsh
 eval "$(zoxide init zsh)"
-[ -f ~/.zoxide.zsh ] && source ~/.zoxide.zsh
+
+source <(fzf --zsh)
+source <(chezmoi completion zsh)
