@@ -1,0 +1,84 @@
+#################################### XDG / PATHS #################################
+# XDG defaults
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins"
+
+# app-specific locations
+zsh_dir="${XDG_CONFIG_HOME}/zsh"
+zsh_state_dir="${XDG_STATE_HOME}/zsh"
+zsh_plugins_dir="${XDG_DATA_HOME}/plugins"
+
+# ensure directories exist
+mkdir -p "$zsh_dir" "$zsh_state_dir" "$zsh_plugins_dir" 2>/dev/null || true
+
+################################### UI / UX ####################################
+# Prompt
+PROMPT='%F{#00BFFF}%n%:%F{#247FFF}%~%f$ '
+
+############################### HISTORY CONFIG ##################################
+# History stored under XDG state dir
+HISTFILE="${zsh_state_dir}/history"
+export HISTFILE
+
+HISTSIZE=100000
+SAVEHIST=100000
+setopt inc_append_history       # write commands as they happen
+setopt append_history           # append, don't overwrite
+
+############################### ALIASES / SMALL STUBS ############################
+# Prefer aliases kept under ~/.config/zsh/aliases, fallback to ~/.aliases
+if [ -f "${HOME}/aliases" ]; then
+  source "${HOME}/.aliases"
+fi
+
+# zsh Aliases
+alias zr='zgenom reset && source "${zsh_dir}/.zshrc"'   # 🔄 reload plugins & zshrc
+
+############################### ZGENOM PLUGINS ##################################
+# Ensure plugin dir exists
+mkdir -p "$zsh_plugins_dir" 2>/dev/null || true
+
+# Tell zgenom where to clone plugins (use config dir plugins per your request)
+export ZGEN_DIR="$zsh_plugins_dir"
+
+# install zgenom if missing (keeps zgenom under ~/.config/zsh/.zgenom)
+if [ ! -d "${zsh_dir}/.zgenom" ]; then
+  git clone https://github.com/jandamm/zgenom.git "${zsh_dir}/.zgenom"
+fi
+
+# source zgenom if available, then run loads only if zgenom is defined
+if [ -f "${zsh_dir}/.zgenom/zgenom.zsh" ]; then
+  source "${zsh_dir}/.zgenom/zgenom.zsh"
+
+  # run one-time plugin installation/saving only if zgenom function exists
+  if command -v zgenom >/dev/null 2>&1; then
+    if ! zgenom saved; then
+      zgenom load zsh-users/zsh-syntax-highlighting
+      zgenom load zsh-users/zsh-completions
+      zgenom load zsh-users/zsh-history-substring-search
+      zgenom load Aloxaf/fzf-tab
+
+      # generate the static init script (fast on subsequent shells)
+      zgenom save
+    fi
+  fi
+fi
+################################################################################
+
+##### zsh-syntax-highlighting minimal colors ####################################
+# Only show red when command is invalid, keep everything else white
+ZSH_HIGHLIGHT_STYLES[default]='none'
+ZSH_HIGHLIGHT_STYLES[command]='none'
+ZSH_HIGHLIGHT_STYLES[alias]='none'
+ZSH_HIGHLIGHT_STYLES[builtin]='none'
+ZSH_HIGHLIGHT_STYLES[function]='none'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='none'
+ZSH_HIGHLIGHT_STYLES[precommand]='none'
+ZSH_HIGHLIGHT_STYLES[hashed-command]='none'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red'
+ZSH_HIGHLIGHT_MAXIMUM_ASYNC_WAIT=0.2
+
+# Completion
+autoload -U compinit && compinit -u
+

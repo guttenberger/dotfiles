@@ -1,0 +1,16 @@
+
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
+# Load shared environment variables
+if [ -f ~/.shell_env ]; then
+    source ~/.shell_env
+fi
+
+# Load shared aliases
+if [ -f ~/.aliases ]; then
+    source ~/.aliases
+fi
