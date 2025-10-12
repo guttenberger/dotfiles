@@ -5,7 +5,7 @@
 alias tm='tmux attach || tmux new'
 alias lg='lazygit'
 alias v='nvim'
-alias op='opencode'
+alias oc='opencode'
 alias review='ftdv'
 
 # Quick edit common files
