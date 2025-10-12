@@ -15,6 +15,7 @@
       - fd
       - neovim
       - lazygit
+      - zoxide
 
   pre_tasks:
     - name: Ensure Homebrew present (macOS)
