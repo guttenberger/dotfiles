@@ -2,18 +2,9 @@
 # Shared environment variables for both bash and zsh
 # This file is sourced by both ~/.bashrc and ~/.zshrc
 
-# Load global environment variables (tracked by chezmoi)
-if [ -f "$HOME/.env/global" ]; then
-  source "$HOME/.env/global"
+if [ -d "$HOME/.env.d" ]; then
+  for f in "$HOME"/.env.d/*; do
+    [ -e "$f" ] || break
+    [ -f "$f" ] && . "$f"
+  done
 fi
-
-# Load global environment variables (tracked by chezmoi)
-if [ -f "$HOME/.env/aliases" ]; then
-  source "$HOME/.env/aliases"
-fi
-
-# Load secrets (not tracked by chezmoi)
-if [ -f "$HOME/.env/secrets" ]; then
-  source "$HOME/.env/secrets"
-fi
-

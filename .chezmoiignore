@@ -1,2 +1,2 @@
 README.md
-.env/secrets
+.env.d/secrets
