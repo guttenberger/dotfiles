@@ -1,6 +1,5 @@
 #!/bin/bash
-# Shared aliases for both bash and zsh
-# This file is sourced by both ~/.bashrc and ~/.zshrc
+# Global aliases for both bash and zsh
 
 # Basic aliases
 alias tm='tmux attach || tmux new'
@@ -91,6 +90,7 @@ if command -v rg &>/dev/null; then
 fi
 
 # Quick edit common files
-alias edit-aliases='$EDITOR ~/.aliases && source ~/.aliases'
+alias edit-aliases='$EDITOR ~/.env/aliases && source ~/.env/aliases'
+alias edit-private-aliases='$EDITOR ~/.env/aliases.private && source ~/.env/aliases.private'
 alias edit-zshrc='$EDITOR ~/.zshrc && source ~/.zshrc'
 alias edit-bashrc='$EDITOR ~/.bashrc && source ~/.bashrc'
