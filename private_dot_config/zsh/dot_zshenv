@@ -10,7 +10,3 @@ if [ -f ~/.shell_env ]; then
     source ~/.shell_env
 fi
 
-# Load shared aliases
-if [ -f ~/.aliases ]; then
-    source ~/.aliases
-fi
