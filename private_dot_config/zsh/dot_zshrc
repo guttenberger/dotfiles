@@ -18,7 +18,7 @@ PROMPT='%F{#00BFFF}%n%:%F{#247FFF}%~%f$ '
 
 ############################### ALIASES / SMALL STUBS ############################
 # Prefer aliases kept under ~/.config/zsh/aliases, fallback to ~/.aliases
-if [ -f "${HOME}/aliases" ]; then
+if [ -f "${HOME}/.aliases" ]; then
   source "${HOME}/.aliases"
 fi
 
