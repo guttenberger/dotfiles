@@ -1,59 +1,71 @@
 ---
-- name: Machine setup with bin
+- name: Machine setup with Homebrew
   hosts: localhost
-  become: false  # bin doesn't need sudo
+  become: false
   connection: local
   gather_facts: true
+
+  vars:
+    base_packages:
+      - git
+      - curl
+      - python
+    dev_packages:
+      - ripgrep
+      - fd
+      - neovim
+      - lazygit
+
+  pre_tasks:
+    - name: Ensure Homebrew present (macOS)
+      ansible.builtin.stat:
+        path: /opt/homebrew/bin/brew
+      register: brew_macos
+      when: ansible_os_family == "Darwin"
+
+    - name: Ensure Homebrew present (Intel Mac fallback)
+      ansible.builtin.stat:
+        path: /usr/local/bin/brew
+      register: brew_macos_intel
+      when: ansible_os_family == "Darwin"
+
+    - name: Install Homebrew (macOS)
+      ansible.builtin.shell: |
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      when: ansible_os_family == "Darwin" and (not brew_macos.stat.exists and not brew_macos_intel.stat.exists)
+      changed_when: true
+
+    - name: Ensure Homebrew present (Linux)
+      ansible.builtin.stat:
+        path: /home/linuxbrew/.linuxbrew/bin/brew
+      register: brew_linux
+      when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
+
+    - name: Install Homebrew (Linux)
+      ansible.builtin.shell: |
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      when: (ansible_os_family == "Debian" or ansible_os_family == "RedHat") and not brew_linux.stat.exists
+      changed_when: true
+
+    - name: Add Homebrew to PATH (Linux)
+      ansible.builtin.set_fact:
+        ansible_env: "{{ ansible_env | combine({'PATH': '/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:' + ansible_env.PATH}) }}"
+      when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
 
   tasks:
     - name: Get my user
       ansible.builtin.set_fact:
         remote_regular_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
 
-    # Install minimal system packages only (what bin can't handle)
-    - name: Install basic system packages (Ubuntu/WSL)
-      ansible.builtin.apt:
-        name:
-          - git
-          - curl
-          - python3-pip
-          - build-essential
-        state: present
-        update_cache: true
-      become: true
-      when: ansible_os_family == "Debian"
-
-    - name: Install basic system packages (macOS)
+    - name: Install base packages (all via Homebrew)
       community.general.homebrew:
-        name:
-          - git
-          - curl
-          - python3
+        name: "{{ base_packages }}"
         state: present
-      when: ansible_os_family == "Darwin"
 
-    # Install development tools via native package managers
-    - name: Install development tools (macOS)
+    - name: Install development packages (all via Homebrew)
       community.general.homebrew:
-        name:
-          - ripgrep
-          - fd
-          - neovim
-          - lazygit
+        name: "{{ dev_packages }}"
         state: present
-      when: ansible_os_family == "Darwin"
-
-    - name: Install development tools (Ubuntu/WSL)
-      ansible.builtin.apt:
-        name:
-          - ripgrep
-          - fd-find
-          - neovim
-          - lazygit
-        state: present
-        update_cache: true
-      become: true
-      when: ansible_os_family == "Debian"
 
     - name: Setup ripgrep config
       ansible.builtin.copy:
@@ -68,7 +80,7 @@
           --glob=!dist/*
           --glob=!build/*
         dest: ~/.ripgreprc
-        mode: '0644'
+        mode: "0644"
 
     - name: Setup fd ignore file
       ansible.builtin.copy:
@@ -81,7 +93,7 @@
           target/
           .DS_Store
         dest: ~/.fdignore
-        mode: '0644'
+        mode: "0644"
 
     - name: Install pre-commit
       ansible.builtin.pip:

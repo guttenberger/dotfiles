@@ -1,32 +1,55 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-install_on_ubuntu() {
-    sudo apt-get update
-    sudo apt-get install -y ansible
+have_cmd() { command -v "$1" >/dev/null 2>&1; }
+
+install_homebrew() {
+    echo "Installing Homebrew..."
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
-install_on_mac() {
-    brew install ansible
+ensure_homebrew() {
+    if ! have_cmd brew; then
+        install_homebrew
+    fi
+
+    # Add brew to PATH for current session (Linux or macOS arm/intel)
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        # Standard brew path locations
+        for p in /opt/homebrew/bin /usr/local/bin; do
+            [[ -d "$p" ]] && export PATH="$p:$PATH"
+        done
+    else
+        # Linuxbrew typical paths
+        for p in /home/linuxbrew/.linuxbrew/bin /home/linuxbrew/.linuxbrew/sbin /usr/local/bin; do
+            [[ -d "$p" ]] && export PATH="$p:$PATH"
+        done
+    fi
 }
 
-OS="$(uname -s)"
-case "${OS}" in
-    Linux*)
-        if [ -f /etc/lsb-release ]; then
-            install_on_ubuntu
-        else
-            echo "Unsupported Linux distribution"
+install_ansible() {
+    if brew list --formula ansible >/dev/null 2>&1; then
+        echo "Ansible already installed. Upgrading..."
+        brew upgrade ansible || true
+    else
+        brew install ansible
+    fi
+}
+
+main() {
+    OS="$(uname -s)"
+    case "$OS" in
+        Darwin*|Linux*)
+            ensure_homebrew
+            install_ansible
+            ;;
+        *)
+            echo "Unsupported operating system: $OS"
             exit 1
-        fi
-        ;;
-    Darwin*)
-        install_on_mac
-        ;;
-    *)
-        echo "Unsupported operating system: ${OS}"
-        exit 1
-        ;;
-esac
+            ;;
+    esac
+    echo "Ansible installation complete via Homebrew."
+}
 
-echo "Ansible installation complete."
+main "$@"
 

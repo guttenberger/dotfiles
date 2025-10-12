@@ -101,9 +101,18 @@ for _d in \
   "$HOME/.local/share/zsh/site-functions" \
   "/opt/homebrew/share/zsh/site-functions" \
   "/usr/local/share/zsh/site-functions" \
+  "/home/linuxbrew/.linuxbrew/share/zsh/site-functions" \
   "/usr/share/zsh/site-functions"; do
   [[ -d $_d ]] && fpath=("$_d" $fpath)
 done
+
+# Dynamically add current brew prefix (covers macOS & Linuxbrew) earliest in fpath
+if command -v brew >/dev/null 2>&1; then
+  _brew_prefix="$(brew --prefix 2>/dev/null)"
+  if [ -n "$_brew_prefix" ] && [ -d "$_brew_prefix/share/zsh/site-functions" ]; then
+    fpath=("$_brew_prefix/share/zsh/site-functions" $fpath)
+  fi
+fi
 
 # Initialize completion system
 autoload -U compinit && compinit -u
