@@ -104,4 +104,4 @@ for _d in \
 done
 
 # Initialize completion system
-autoload -Uz compinit && compinit
+autoload -U compinit && compinit -u
