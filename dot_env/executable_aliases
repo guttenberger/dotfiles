@@ -7,7 +7,9 @@ alias lg='lazygit'
 alias v='nvim'
 alias op='opencode'
 alias review='ftdv'
-alias conf='chezmoi edit && echo "chezmoi apply" && chezmoi apply'
+
+# Quick edit common files
+alias edit-tmux='chezmoi edit --apply && tmux source-file ~/.config/tmux/tmux.conf && echo "tmux reloaded"'
 
 # Cross-platform color aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -88,9 +90,3 @@ if command -v rg &>/dev/null; then
     rg --files-with-matches "$1" | fzf --preview "rg --color=always --line-number --no-heading --smart-case $1 {}"
   }
 fi
-
-# Quick edit common files
-alias edit-aliases='$EDITOR ~/.env/aliases && source ~/.env/aliases'
-alias edit-private-aliases='$EDITOR ~/.env/aliases.private && source ~/.env/aliases.private'
-alias edit-zshrc='$EDITOR ~/.zshrc && source ~/.zshrc'
-alias edit-bashrc='$EDITOR ~/.bashrc && source ~/.bashrc'

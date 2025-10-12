@@ -7,6 +7,11 @@ if [ -f "$HOME/.env/global" ]; then
   source "$HOME/.env/global"
 fi
 
+# Load global environment variables (tracked by chezmoi)
+if [ -f "$HOME/.env/aliases" ]; then
+  source "$HOME/.env/aliases"
+fi
+
 # Load secrets (not tracked by chezmoi)
 if [ -f "$HOME/.env/secrets" ]; then
   source "$HOME/.env/secrets"

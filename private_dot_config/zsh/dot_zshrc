@@ -24,6 +24,7 @@ fi
 
 # zsh Aliases
 alias zr='zgenom reset && source "${zsh_dir}/.zshrc"'   # 🔄 reload plugins & zshrc
+alias edit-zshrc='chezmoi edit --apply "${zsh_dir}" && source "${zsh_dir}/.zshrc"'
 
 ################################### KEYBINDINGS ####################################
 bindkey -e
