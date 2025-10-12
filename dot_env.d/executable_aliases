@@ -38,7 +38,13 @@ if command -v rg &>/dev/null; then
   alias grep='rg'
 fi
 if command -v zoxide &>/dev/null; then
-  alias cd='z' # Use zoxide for smart directory jumping
+  # Initialize zoxide once (works for bash and zsh). Provides 'z' and smarter cd.
+  eval "$(zoxide init ${ZSH_VERSION:+zsh}${BASH_VERSION:+bash})"
+  # Optionally replace cd with z for muscle memory (only if you want that behavior)
+  alias cd='z'
+else
+  # Provide a harmless fallback so 'z' just cds
+  z() { cd "$@"; }
 fi
 
 # Git aliases
