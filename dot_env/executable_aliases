@@ -6,7 +6,7 @@ alias tm='tmux attach || tmux new'
 alias lg='lazygit'
 alias v='nvim'
 alias op='opencode'
-alias diff='ftdv'
+alias review='ftdv'
 alias conf='chezmoi edit && echo "chezmoi apply" && chezmoi apply'
 
 # Cross-platform color aliases
