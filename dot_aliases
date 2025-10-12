@@ -6,6 +6,9 @@
 alias tm='tmux attach || tmux new'
 alias lg='lazygit'
 alias v='nvim'
+alias op='opencode'
+alias diff='ftdv'
+alias conf='chezmoi edit'
 
 # Cross-platform color aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -91,4 +94,3 @@ fi
 alias edit-aliases='$EDITOR ~/.aliases && source ~/.aliases'
 alias edit-zshrc='$EDITOR ~/.zshrc && source ~/.zshrc'
 alias edit-bashrc='$EDITOR ~/.bashrc && source ~/.bashrc'
-
