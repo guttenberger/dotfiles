@@ -10,6 +10,7 @@ alias review='ftdv'
 
 # Quick edit common files
 alias edit-tmux='chezmoi edit --apply && tmux source-file ~/.config/tmux/tmux.conf && echo "tmux reloaded"'
+alias edit-secrets='nvim ~/.env.d/secrets'
 
 # Cross-platform color aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
